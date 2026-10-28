@@ -1,0 +1,113 @@
+spring:
+  application:
+    name: activation-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/activation}
+    username: ${DB_USER:activation}
+    password: ${DB_PASSWORD:activation}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: UTC
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  task:
+    scheduling:
+      pool:
+        size: 3
+      shutdown:
+        await-termination: true
+        await-termination-period: 30s
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+  forward-headers-strategy: framework
+  error:
+    include-stacktrace: never
+    include-message: never
+    include-binding-errors: never
+    include-exception: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+      group:
+        readiness:
+          include: readinessState,db
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  tracing:
+    # 0 = sem exportar traces por padrao; aumente (ex.: 0.1) ao configurar um coletor OTLP.
+    sampling:
+      probability: ${TRACING_SAMPLING_PROBABILITY:0.0}
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  pattern:
+    level: "%5p [%X{correlationId:-}]"
+
+activation:
+  worker:
+    enabled: true
+    poll-interval: PT1S
+    batch-size: 10
+  retry:
+    max-attempts: ${ACTIVATION_MAX_ATTEMPTS:5}
+    initial-delay: PT5S
+    max-delay: PT5M
+  reconciliation:
+    interval: PT30S
+    stale-after: PT2M
+    batch-size: 50
+  provider:
+    base-url: ${PROVIDER_BASE_URL:http://localhost:9090}
+    activate-path: /provider/v1/activate
+    connect-timeout: ${PROVIDER_CONNECT_TIMEOUT:PT2S}
+    read-timeout: ${PROVIDER_READ_TIMEOUT:PT5S}
+    api-key: ${PROVIDER_API_KEY:}
+    circuit-breaker:
+      failure-rate-threshold: 50
+      minimum-calls: 10
+      sliding-window-size: 20
+      open-duration: PT30S
+  security:
+    jwt:
+      issuer: ${JWT_ISSUER:https://auth.exemplo.com}
+      audience: ${JWT_AUDIENCE:activation-service}
+      jwk-set-uri: ${JWT_JWK_SET_URI:}
+  limits:
+    max-body-size: 8KB
+    requests-per-minute: ${RATE_LIMIT_PER_MINUTE:120}
+    burst: ${RATE_LIMIT_BURST:30}
+  problems:
+    base-uri: https://api.exemplo.com/problems/

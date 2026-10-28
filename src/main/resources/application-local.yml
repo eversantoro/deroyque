@@ -1,0 +1,8 @@
+# Perfil de desenvolvimento: dispensa servidor de autorizacao (token HS256 gerado por scripts/dev-token.*).
+# NUNCA use este perfil em producao.
+activation:
+  security:
+    jwt:
+      issuer: http://localhost/local-issuer
+      audience: activation-service
+      local-secret: ${JWT_LOCAL_SECRET:local-development-secret-change-me-0123456789}

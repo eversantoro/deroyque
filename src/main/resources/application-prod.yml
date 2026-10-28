@@ -1,0 +1,7 @@
+# Perfil de producao: logs estruturados em JSON (um objeto por linha, inclui o MDC/correlationId).
+logging:
+  structured:
+    format:
+      console: logstash
+  pattern:
+    level: "%5p"
