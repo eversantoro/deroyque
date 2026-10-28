@@ -1,0 +1,49 @@
+# Ambiente local completo: aplicacao + PostgreSQL + mock do provedor (WireMock).
+#   docker compose up --build
+# O perfil "local" aceita tokens HS256 gerados por scripts/dev-token.sh (so para desenvolvimento).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: activation
+      POSTGRES_USER: activation
+      POSTGRES_PASSWORD: activation
+    ports:
+      - "127.0.0.1:${DB_HOST_PORT:-5433}:5432"   # para rodar a aplicacao pela IDE contra este banco
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U activation -d activation"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  provider-mock:
+    image: wiremock/wiremock:3.13.1
+    command: ["--global-response-templating", "--verbose"]
+    ports:
+      - "9090:8080"
+    volumes:
+      - ./docker/wiremock/mappings:/home/wiremock/mappings:ro
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+      provider-mock:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: local,prod
+      DB_URL: jdbc:postgresql://db:5432/activation
+      DB_USER: activation
+      DB_PASSWORD: activation
+      PROVIDER_BASE_URL: http://provider-mock:8080
+      PROVIDER_API_KEY: demo-provider-key
+      JWT_LOCAL_SECRET: local-development-secret-change-me-0123456789
+    ports:
+      - "8080:8080"
+    stop_grace_period: 40s
+
+volumes:
+  db-data:

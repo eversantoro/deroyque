@@ -1,0 +1,9 @@
+{
+  "priority": 10,
+  "request": { "method": "POST", "urlPath": "/provider/v1/activate" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "jsonBody": { "status": "ACTIVATED", "requestId": "{{jsonPath request.body '$.requestId'}}" }
+  }
+}

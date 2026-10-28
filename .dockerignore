@@ -1,0 +1,9 @@
+target/
+.git/
+.github/
+.settings/
+.classpath
+.project
+.idea/
+*.md
+docs/
