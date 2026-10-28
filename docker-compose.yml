@@ -22,7 +22,7 @@ services:
     image: wiremock/wiremock:3.13.1
     command: ["--global-response-templating", "--verbose"]
     ports:
-      - "9090:8080"
+      - "${PROVIDER_HOST_PORT:-9090}:8080"
     volumes:
       - ./docker/wiremock/mappings:/home/wiremock/mappings:ro
 
@@ -42,7 +42,7 @@ services:
       PROVIDER_API_KEY: demo-provider-key
       JWT_LOCAL_SECRET: local-development-secret-change-me-0123456789
     ports:
-      - "8080:8080"
+      - "${APP_HOST_PORT:-8080}:8080"
     stop_grace_period: 40s
 
 volumes:

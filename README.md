@@ -83,6 +83,8 @@ O mock do provedor reage ao `productCode`, o que permite demonstrar cada cenári
 | `UNAVAILABLE` | 503 + `Retry-After: 3` | retry respeitando o `Retry-After` |
 | `SLOW` | 200 após 8 s | timeout (5 s) → retry (com a mesma chave de idempotência) |
 
+Se alguma porta do host estiver ocupada, troque-a sem editar o arquivo: `APP_HOST_PORT=8081 DB_HOST_PORT=5434 PROVIDER_HOST_PORT=9091 docker compose up --build`.
+
 ### Pelo Eclipse
 
 1. *File ▸ Import ▸ Maven ▸ Existing Maven Projects* e selecione a pasta do projeto.
