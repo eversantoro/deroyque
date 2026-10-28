@@ -1,0 +1,24 @@
+# Ajustes para testes de integracao: ciclos curtos para a suite ser rapida.
+activation:
+  worker:
+    poll-interval: PT0.1S
+    batch-size: 10
+  retry:
+    max-attempts: 3
+    initial-delay: PT0.05S
+    max-delay: PT0.2S
+  provider:
+    connect-timeout: PT1S
+    read-timeout: PT1S
+    api-key: test-provider-key
+    circuit-breaker:
+      minimum-calls: 1000
+      sliding-window-size: 1000
+  limits:
+    requests-per-minute: 600000
+    burst: 100000
+
+logging:
+  level:
+    org.testcontainers: WARN
+    com.github.dockerjava: WARN
