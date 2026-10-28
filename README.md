@@ -21,6 +21,7 @@ em um provedor externo, de forma assíncrona e resiliente.
 9. [Pontos pendentes](#9-pontos-pendentes)
 10. [Melhorias futuras](#10-melhorias-futuras)
 11. [Estrutura do projeto](#11-estrutura-do-projeto)
+12. [Uso de IA](#12-uso-de-ia)
 
 ---
 
@@ -407,3 +408,11 @@ docs/adr                          registros de decisão
 docker/wiremock                   mapeamentos do mock do provedor
 scripts                           geração de token de desenvolvimento
 ```
+
+---
+
+## 12. Uso de IA
+
+Utilizei o **Cursor** (assistente de IA no editor) como apoio na escrita dos **testes unitários** e nas
+**configurações de ambiente** (Docker/Docker Compose, mock do provedor, CI e propriedades da aplicação).
+O código foi revisado e validado por mim: o projeto compila e todos os testes passam com `./mvnw verify`.
